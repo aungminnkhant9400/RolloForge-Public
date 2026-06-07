@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "description": "Digest delivery schedule configuration",
+  "schedules": [
+    {
+      "id": "morning_brief",
+      "name": "Morning Brief",
+      "enabled": true,
+      "type": "daily",
+      "time": "08:00",
+      "timezone": "Asia/Shanghai",
+      "format": "morning",
+      "highlights": 5,
+      "channels": ["telegram"],
+      "telegram": {
+        "parse_mode": "MarkdownV2",
+        "include_buttons": true
+      }
+    },
+    {
+      "id": "evening_summary",
+      "name": "Evening Summary",
+      "enabled": false,
+      "type": "daily",
+      "time": "18:00",
+      "timezone": "Asia/Shanghai",
+      "format": "summary",
+      "highlights": 3,
+      "channels": ["telegram"]
+    },
+    {
+      "id": "weekly_deep_dive",
+      "name": "Weekly Deep Dive",
+      "enabled": true,
+      "type": "weekly",
+      "day": "sunday",
+      "time": "09:00",
+      "timezone": "Asia/Shanghai",
+      "format": "detailed",
+      "highlights": 10,
+      "channels": ["telegram"],
+      "telegram": {
+        "parse_mode": "MarkdownV2",
+        "include_buttons": true
+      }
+    }
+  ],
+  "stale_detection": {
+    "enabled": true,
+    "thresholds": {
+      "test_this_week": 7,
+      "build_later": 30,
+      "archive": 90
+    },
+    "include_in_digest": true
+  },
+  "action_tracking": {
+    "enabled": true,
+    "log_file": "data/action_log.json"
+  },
+  "notifications": {
+    "on_digest_sent": true,
+    "on_action_logged": false,
+    "on_stale_detected": true
+  }
+}

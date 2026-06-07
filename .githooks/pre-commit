@@ -1,0 +1,43 @@
+#!/bin/bash
+# Pre-commit hook for RolloForge
+# Runs security audits before allowing commits
+# Install: cp .githooks/pre-commit .git/hooks/pre-commit
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+echo -e "${BLUE}╔════════════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║     RolloForge Pre-Commit Security Check               ║${NC}"
+echo -e "${BLUE}╚════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+# Run the security audit script
+if [ -f "$PROJECT_ROOT/scripts/security-audit.sh" ]; then
+    if "$PROJECT_ROOT/scripts/security-audit.sh"; then
+        echo ""
+        echo -e "${GREEN}✓ Security checks passed - proceeding with commit${NC}"
+        exit 0
+    else
+        AUDIT_EXIT=$?
+        echo ""
+        echo -e "${RED}✗ Security checks failed${NC}"
+        echo ""
+        echo "Options:"
+        echo "  1. Fix the vulnerabilities and try again"
+        echo "  2. Run 'git commit --no-verify' to bypass (not recommended)"
+        echo ""
+        exit $AUDIT_EXIT
+    fi
+else
+    echo -e "${YELLOW}⚠ Security audit script not found at scripts/security-audit.sh${NC}"
+    echo "    Skipping security check..."
+    exit 0
+fi

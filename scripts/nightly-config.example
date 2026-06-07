@@ -1,0 +1,29 @@
+# Nightly Build Configuration
+# 
+# Copy this file to .nightly-config and customize as needed
+# The nightly build system will read environment variables from here
+
+# GitHub Configuration
+export GITHUB_TOKEN=""           # GitHub personal access token for PR creation
+export GITHUB_REPO="aungminnkhant9400/RolloForge"
+
+# Notification Configuration
+export TELEGRAM_BOT_TOKEN=""     # For Telegram notifications
+export TELEGRAM_CHAT_ID=""       # Target chat/channel ID
+export NOTIFY_ON_FAILURE=true    # Send notification on build failure
+export NOTIFY_ON_SUCCESS=false   # Send notification on build success
+
+# Build Configuration
+export DRY_RUN=false             # Run in dry-run mode (no changes)
+export SKIP_AUTO_FIX=false       # Skip automatic fixes
+export MAX_PRS_PER_RUN=3         # Maximum PRs to create per run
+export AUTO_FIX_DUPLICATES=true  # Automatically fix duplicate bookmarks
+export AUTO_FIX_MISSING_ANALYSIS=true  # Create placeholder analyses
+
+# Safety Configuration
+export BACKUP_RETENTION_DAYS=30  # Keep backups for this many days
+export MAX_FILE_SIZE_MB=50       # Warn if data files exceed this size
+
+# Advanced Configuration
+export PYTHON_PATH=""            # Custom Python path (default: auto-detect)
+export LOG_LEVEL="INFO"          # DEBUG, INFO, WARNING, ERROR

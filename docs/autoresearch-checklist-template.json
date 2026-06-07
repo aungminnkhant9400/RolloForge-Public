@@ -1,0 +1,189 @@
+{
+  "_comment": "Scoring Checklist Template for Karpathy Autoresearch Skill Improvement",
+  "version": "1.0",
+  "template_rules": {
+    "question_count": "3-6 yes/no questions",
+    "scoring": "Each 'yes' = 1 point, sum for total score",
+    "weighting": "Optional: weight critical questions higher",
+    "clarity": "Questions must be objectively answerable"
+  },
+  "examples": {
+    "bookmark_processor": {
+      "skill_name": "bookmark-processor",
+      "description": "For evaluating bookmark tagging and categorization",
+      "checklist": [
+        {
+          "id": "relevant_tags",
+          "question": "Are all assigned tags relevant to the bookmark content?",
+          "weight": 1.0,
+          "rationale": "Core functionality - incorrect tags make bookmark unfindable"
+        },
+        {
+          "id": "correct_bucket",
+          "question": "Is the assigned bucket appropriate for urgency/importance?",
+          "weight": 1.0,
+          "rationale": "Critical for workflow - wrong bucket = missed action"
+        },
+        {
+          "id": "no_missing_tags",
+          "question": "Are there no obvious missing tags that should be included?",
+          "weight": 1.0,
+          "rationale": "Completeness check"
+        },
+        {
+          "id": "title_accuracy",
+          "question": "Is the generated title accurate and descriptive?",
+          "weight": 0.8,
+          "rationale": "Important but less critical than tags/bucket"
+        },
+        {
+          "id": "actionable",
+          "question": "Would this bookmark lead to actionable next steps?",
+          "weight": 0.5,
+          "rationale": "Nice to have - not all bookmarks are actionable"
+        }
+      ]
+    },
+    "analysis_generator": {
+      "skill_name": "analysis-generator",
+      "description": "For evaluating intelligence report quality",
+      "checklist": [
+        {
+          "id": "actionable_insight",
+          "question": "Does the analysis identify at least one actionable insight?",
+          "weight": 1.0
+        },
+        {
+          "id": "justified_priority",
+          "question": "Are priority scores justified with specific reasoning?",
+          "weight": 1.0
+        },
+        {
+          "id": "relevant_cross_ref",
+          "question": "Is the cross-reference section relevant to user's stated goals?",
+          "weight": 0.8
+        },
+        {
+          "id": "accurate_summary",
+          "question": "Does the summary accurately reflect the bookmark content?",
+          "weight": 1.0
+        },
+        {
+          "id": "realistic_time",
+          "question": "Are time estimates realistic for each recommended action?",
+          "weight": 0.6
+        }
+      ]
+    },
+    "priority_scorer": {
+      "skill_name": "priority-scorer",
+      "description": "For evaluating priority assignment accuracy",
+      "checklist": [
+        {
+          "id": "aligns_goals",
+          "question": "Does the score align with user's current priorities (reduce friction, GPU infra, AI automation)?",
+          "weight": 1.0
+        },
+        {
+          "id": "realistic_effort",
+          "question": "Is the effort estimate realistic?",
+          "weight": 0.8
+        },
+        {
+          "id": "justified_impact",
+          "question": "Is the impact assessment justified?",
+          "weight": 0.8
+        },
+        {
+          "id": "top5_worthy",
+          "question": "Would this be in the top 5 actions for the week?",
+          "weight": 1.0
+        }
+      ]
+    },
+    "deepseek_analyzer": {
+      "skill_name": "deepseek-analyzer",
+      "description": "For evaluating content analysis quality",
+      "checklist": [
+        {
+          "id": "factual_accuracy",
+          "question": "Is the analysis factually accurate based on the content?",
+          "weight": 1.0
+        },
+        {
+          "id": "key_insight",
+          "question": "Does it extract the key insight/lesson?",
+          "weight": 1.0
+        },
+        {
+          "id": "compelling_why",
+          "question": "Is the 'why it matters' section compelling?",
+          "weight": 0.8
+        },
+        {
+          "id": "specific_actions",
+          "question": "Are the recommended actions specific and concrete?",
+          "weight": 0.8
+        }
+      ]
+    },
+    "skill_creator": {
+      "skill_name": "skill-creator",
+      "description": "For evaluating OpenClaw skill quality",
+      "checklist": [
+        {
+          "id": "clear_trigger",
+          "question": "Is the skill description clear about when to trigger?",
+          "weight": 1.0
+        },
+        {
+          "id": "concise_instructions",
+          "question": "Are instructions concise (under 500 lines)?",
+          "weight": 0.8
+        },
+        {
+          "id": "has_examples",
+          "question": "Does it include concrete examples?",
+          "weight": 0.8
+        },
+        {
+          "id": "progressive_disclosure",
+          "question": "Does it use progressive disclosure (references for details)?",
+          "weight": 0.6
+        },
+        {
+          "id": "no_redundancy",
+          "question": "Is there no redundant or obvious information?",
+          "weight": 0.8
+        }
+      ]
+    }
+  },
+  "custom_checklist_worksheet": {
+    "step1": "Identify the skill's core output",
+    "step2": "List 3-5 success criteria (what does 'good' look like?)",
+    "step3": "Convert each to a yes/no question",
+    "step4": "Assign weights (1.0 = critical, 0.5 = nice to have)",
+    "step5": "Test on 5 examples - can you answer consistently?",
+    "template": {
+      "skill_name": "your-skill-name",
+      "checklist": [
+        {
+          "id": "criterion_1",
+          "question": "[Your yes/no question here]?",
+          "weight": 1.0
+        },
+        {
+          "id": "criterion_2",
+          "question": "[Your yes/no question here]?",
+          "weight": 1.0
+        },
+        {
+          "id": "criterion_3",
+          "question": "[Your yes/no question here]?",
+          "weight": 0.8
+        }
+      ]
+    }
+  }
+}

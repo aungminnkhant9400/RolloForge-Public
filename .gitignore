@@ -1,0 +1,51 @@
+.venv/
+reports/history/
+.cache/
+.env
+.env.local
+
+# Credentials — NEVER commit
+.x_credentials.json
+.x_cookies.json
+*.token
+*secret*
+
+# Python
+__pycache__/
+*.pyc
+
+# Next.js build artifacts
+.next/
+dist/
+node_modules/
+*.log
+.vercel
+
+# Data — contains personal bookmarks
+data/
+web/public/data.json
+web/public/analysis.json
+web/lib/data.json
+web/lib/analysis.json
+
+# Backups
+.nightly-backups/
+nightly-backups/
+
+# Reports — may contain personal data
+reports/
+
+# Security
+security-audit-report-*.md
+
+# Sensitive scripts
+scripts/send_digest_telegram.py
+scripts/send-morning-report.py
+scripts/send_daily_digest.py
+scripts/stale_bookmark_alert.py
+scripts/get_x_user_token.py
+
+# SQLite database files
+*.db
+*.db-wal
+*.db-shm

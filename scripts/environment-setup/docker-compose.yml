@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Python backend service
+  rolloforge-api:
+    build:
+      context: ../..
+      dockerfile: scripts/environment-setup/Dockerfile
+    container_name: rolloforge-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount data directory for persistence
+      - ../../data:/app/data
+      # Mount source code for development (hot reload)
+      - ../../rolloforge:/app/rolloforge
+      - ../../scripts:/app/scripts
+      - ../../forge.py:/app/forge.py
+      - ../../forge:/app/forge
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - DEEPSEEK_API_BASE=${DEEPSEEK_API_BASE:-https://api.deepseek.com}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-chat}
+      - DEEPSEEK_TIMEOUT_SECONDS=${DEEPSEEK_TIMEOUT_SECONDS:-45}
+      - DEEPSEEK_MAX_RETRIES=${DEEPSEEK_MAX_RETRIES:-3}
+      - PIPELINE_STAGE=${PIPELINE_STAGE:-idea_validation}
+      - X_USER_ACCESS_TOKEN=${X_USER_ACCESS_TOKEN}
+      - X_CLIENT_ID=${X_CLIENT_ID}
+      - X_CLIENT_SECRET=${X_CLIENT_SECRET}
+      - X_REDIRECT_URI=${X_REDIRECT_URI}
+      - X_API_BASE_URL=${X_API_BASE_URL:-https://api.x.com/2}
+      - X_MAX_RESULTS=${X_MAX_RESULTS:-100}
+      - X_MAX_PAGES=${X_MAX_PAGES:-50}
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - ../../.env
+    working_dir: /app
+    command: ["./scripts/environment-setup/entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import rolloforge.deepseek_analysis; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - rolloforge-network
+
+  # Next.js dashboard development server
+  dashboard:
+    image: node:20-alpine
+    container_name: rolloforge-dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../web:/app
+      - node_modules:/app/node_modules
+      - ../../data:/app/data:ro
+    working_dir: /app
+    command: >
+      sh -c "
+        npm install &&
+        npm run dev
+      "
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - rolloforge-network
+    depends_on:
+      - rolloforge-api
+
+networks:
+  rolloforge-network:
+    driver: bridge
+
+volumes:
+  node_modules:

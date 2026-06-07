@@ -1,0 +1,95 @@
+{# Daily Digest Template - Markdown Version #}
+# 📚 Daily Digest - {{ date.strftime("%B %d, %Y") }}
+
+*{{ greeting }}! Generated at {{ generated_at.strftime("%H:%M") }}*
+
+---
+
+## 🔥 Streak
+
+{{ streak_message }}
+
+---
+
+## 📊 Today's Summary
+
+| Metric | Value |
+|--------|-------|
+| New Bookmarks | **{{ stats.total_new }}** |
+| ⚡ High Priority | **{{ stats.high_priority }}** |
+| 📚 Medium Priority | **{{ stats.medium_priority }}** |
+| 📁 Archive | **{{ stats.low_priority }}** |
+{% if stats.avg_worth_score > 0 %}
+| Avg Worth | **{{ "%.1f"|format(stats.avg_worth_score) }}** / 10 |
+{% endif %}
+
+{% if yesterday_comparison.change != 0 %}
+**vs Yesterday:** {{ yesterday_comparison.trend }} {{ yesterday_comparison.change }} bookmarks ({{ yesterday_comparison.yesterday_count }} → {{ yesterday_comparison.today_count }})
+{% endif %}
+
+{% if stats.top_source %}
+**Top Source:** {{ stats.top_source }}
+{% endif %}
+
+---
+
+{% if highlights %}
+## ⭐ Highlights
+
+{% for item in highlights %}
+### {{ loop.index }}. {% if item.analysis.recommendation_bucket == 'test_this_week' %}⚡{% elif item.analysis.recommendation_bucket == 'build_later' %}📚{% else %}📁{% endif %} {{ item.bookmark.title or item.bookmark.text[:60] + "..." }}
+
+**URL:** {{ item.bookmark.url }}
+
+**Summary:** {{ item.analysis.summary }}
+
+**Scores:** Worth {{ "%.1f"|format(item.analysis.worth_score) }} | Priority {{ "%.1f"|format(item.analysis.priority_score) }}
+
+{% if item.quick_take %}
+**Quick Take:** 👉 {{ item.quick_take }}
+{% endif %}
+
+{% if item.bookmark.tags %}
+**Tags:** {{ item.bookmark.tags | join(", ") }}
+{% endif %}
+
+---
+{% endfor %}
+{% endif %}
+
+{% if quick_list %}
+## 📋 Quick List
+
+| # | Title | Bucket | Priority |
+|---|-------|--------|----------|
+{% for item in quick_list %}
+| {{ loop.index + highlights|length }} | [{{ (item.bookmark.title or item.bookmark.text[:40]) | truncate(40) }}]({{ item.bookmark.url }}) | {{ item.analysis.recommendation_bucket | replace("_", " ") | title }} | {{ "%.1f"|format(item.analysis.priority_score) }} |
+{% endfor %}
+
+---
+{% endif %}
+
+{% if stats.top_topics %}
+## 🏷 Topics Today
+
+{% for topic, count in stats.top_topics %}
+- **{{ topic }}:** {{ count }} bookmark{{ "s" if count > 1 else "" }}
+{% endfor %}
+
+---
+{% endif %}
+
+## 🎯 Quick Actions
+
+Based on today's bookmarks:
+
+{% if highlights %}
+{% for item in highlights[:3] %}
+{{ loop.index }}. [{{ item.bookmark.title or item.bookmark.text[:50] + "..." }}]({{ item.bookmark.url }}) 
+   {% if item.analysis.recommendation_bucket == 'test_this_week' %}(Test this week){% endif %}
+{% endfor %}
+{% endif %}
+
+---
+
+*RolloForge Daily Digest • [View Dashboard](https://rollo-forge.vercel.app)*

@@ -1,0 +1,85 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    name: Security Audit
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Python security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-audit bandit safety
+
+    - name: Run pip-audit on requirements.txt
+      run: |
+        echo "## Python Dependencies Audit" >> $GITHUB_STEP_SUMMARY
+        pip-audit --requirement requirements.txt --format markdown --desc on >> $GITHUB_STEP_SUMMARY || true
+      continue-on-error: true
+
+    - name: Run Bandit security linter
+      run: |
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Python Security Linter (Bandit)" >> $GITHUB_STEP_SUMMARY
+        bandit -r rolloforge scripts config -f markdown -ll >> $GITHUB_STEP_SUMMARY || true
+      continue-on-error: true
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Run npm audit
+      working-directory: ./web
+      run: |
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## npm Audit Results" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        npm audit --audit-level=moderate 2>&1 >> $GITHUB_STEP_SUMMARY || true
+        echo '```' >> $GITHUB_STEP_SUMMARY
+      continue-on-error: true
+
+    - name: Check for secrets in commits
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: main
+        head: HEAD
+        extra_args: --debug --only-verified
+      continue-on-error: true
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    name: Dependency Review
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: high
+        vulnerability-check: true
+        license-check: false
